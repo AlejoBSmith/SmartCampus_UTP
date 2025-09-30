@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from streamlit_autorefresh import st_autorefresh
-import altair as alt
 import time
 
 st.set_page_config(layout='wide', initial_sidebar_state='expanded')
@@ -13,41 +12,40 @@ st.image("https://i.ibb.co/Q3RQT66R/SMT.png", caption=".")
 st_autorefresh(interval=50000, limit=None, key="refresh_counter")
 
 # ------------------- CARGA DE DATOS -------------------
-@st.cache_data
-@st.cache_data
+@st.cache_data(ttl=60)  # cache válido solo 60 segundos
 def load_data():
-    import os, time
     start = time.time()
-    
-    # Detecta siempre la raíz del proyecto (SMARTCAMPUS)
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data_csv = os.path.join(base_dir, "Data", "uplinks.csv")
-    data_parquet = os.path.join(base_dir, "Data", "uplinks.parquet")
+
+    url_csv = "https://raw.githubusercontent.com/smartcampusutp/SmartCampus_UTP/refs/heads/main/Data/HISTORICO.csv"
+    url_parquet = "https://raw.githubusercontent.com/smartcampusutp/SmartCampus_UTP/refs/heads/main/Data/HISTORICO.parquet"
 
     df = None
-    if os.path.exists(data_parquet):
-        df = pd.read_parquet(data_parquet)
-    elif os.path.exists(data_csv):
-        df = pd.read_csv(data_csv)
-    else:
-        st.error("❌ No se encontró ni uplinks.parquet ni uplinks.csv en la carpeta Data/")
-        return pd.DataFrame()  # retorna vacío para no romper el resto del código
+    try:
+        df = pd.read_parquet(url_parquet)
+    except:
+        try:
+            df = pd.read_csv(url_csv)
+        except Exception as e:
+            st.error(f"❌ Error cargando datos desde GitHub: {e}")
+            return pd.DataFrame()
 
     df['time'] = pd.to_datetime(df['time'], errors='coerce')
+    df = df.dropna(subset=['time'])
     st.write(f"⏱️ Tiempo de carga: {time.time()-start:.2f} s")
     return df
 
-
 df = load_data()
 
-# Filtrar solo NodoTest al inicio (optimiza downstream)
-df = df[df["deviceName"] == "NodoTest"]
+# Filtrar solo NodoTest al inicio (si existe)
+if "deviceName" in df.columns and "NodoTest" in df["deviceName"].unique():
+    df = df[df["deviceName"] == "NodoTest"]
 
 # ------------------- SIDEBAR -------------------
 st.sidebar.header('Dashboard - UTP')
 st.sidebar.header("Filtros")
 
-if "deviceName" in df.columns:
+# Filtro por sensor
+if "deviceName" in df.columns and not df.empty:
     sensors = df["deviceName"].unique()
     selected_sensor = st.sidebar.selectbox("Seleccionar sensor", sensors)
     df_sensor = df[df["deviceName"] == selected_sensor]
@@ -55,12 +53,19 @@ else:
     st.sidebar.warning("⚠️ No se encontró columna 'deviceName'.")
     df_sensor = df
 
-st.sidebar.subheader('Parámetros de visualización')
-plot_data = st.sidebar.multiselect(
-    'Seleccionar valores:',
-    ['temperature', 'humidity', 'pressure_hPa'],
-    ['temperature', 'humidity']
-)
+# Filtro por día
+if not df_sensor.empty:
+    min_date = df_sensor["time"].dt.date.min()
+    max_date = df_sensor["time"].dt.date.max()
+    selected_date = st.sidebar.date_input(
+        "Seleccionar día",
+        value=max_date,
+        min_value=min_date,
+        max_value=max_date,
+        key=f"date_{selected_sensor}"  # clave distinta por sensor
+    )
+
+    df_sensor = df_sensor[df_sensor["time"].dt.date == selected_date]
 
 st.sidebar.markdown("---\nCreated by I2")
 
@@ -68,27 +73,28 @@ st.sidebar.markdown("---\nCreated by I2")
 st.markdown('### Última Actualización')
 col1, col2, col3 = st.columns(3)
 
-if not df.empty:
-    # Precomputado para evitar ordenar cada vez
-    latest = df.iloc[df['time'].idxmax()]
-    col1.metric("Temperatura", f"{latest['temperature']:.2f} °C")
-    col2.metric("Humedad", f"{latest['humidity']:.2f} %")
-    col3.metric("Presión", f"{latest['pressure_hPa']:.0f} hPa")
+if not df_sensor.empty:
+    try:
+        latest = df_sensor.loc[df_sensor['time'].idxmax()]
+        col1.metric("Temperatura", f"{latest['temperature']:.2f} °C")
+        col2.metric("Humedad", f"{latest['humidity']:.2f} %")
+        col3.metric("Presión", f"{latest['pressure_hPa']:.0f} hPa")
+    except Exception as e:
+        st.warning(f"No se pudo obtener el último registro: {e}")
 else:
-    st.warning("No hay datos en el CSV.")
+    st.warning("No hay datos disponibles para el sensor o día seleccionado.")
 
 # ------------------- TABLA -------------------
 st.markdown("### Últimos registros (máx 500)")
-if not df.empty:
-    df_table = df.drop(columns=["deviceName","battery_mV", "rssi","snr"])
+if not df_sensor.empty:
+    df_table = df_sensor.drop(columns=["Unnamed: 0"], errors="ignore")
     st.dataframe(df_table.tail(500).iloc[::-1], use_container_width=True)
 else:
     st.info("Esperando datos...")
 
-# ------------------- GRÁFICOS -------------------
+# ------------------- GRÁFICOS GAUGE -------------------
 col1, col2 = st.columns(2)
-
-if not df.empty:
+if not df_sensor.empty:
     with col1:
         fig_temp = go.Figure(go.Indicator(
             mode="gauge+number",
@@ -115,10 +121,43 @@ if not df.empty:
         ))
         st.plotly_chart(fig_hum, use_container_width=True)
 
-# ------------------- LINE CHART -------------------
+# ------------------- GRÁFICOS DE LÍNEA -------------------
 st.markdown('### Evolución temporal')
-if not df.empty:
-    # ⚡ Para velocidad, limitar puntos a últimos 5000
-    df_plot = df.tail(5000)
-    st.line_chart(df_plot, x='time', y=plot_data, height=400)
+
+if not df_sensor.empty:
+    df_plot = df_sensor.tail(5000)
+
+    # Escalas dinámicas con margen 10%
+    def dynamic_range(series, margin=0.1):
+        min_val = series.min()
+        max_val = series.max()
+        delta = (max_val - min_val) * margin
+        return min_val - delta, max_val + delta
+
+    temp_range = dynamic_range(df_plot['temperature'])
+    hum_range = dynamic_range(df_plot['humidity'])
+    if "pressure_hPa" in df_plot.columns:
+        pres_range = dynamic_range(df_plot['pressure_hPa'])
+
+    # Gráfico de Temperatura
+    st.subheader("📈 Evolución de la Temperatura")
+    fig_temp = go.Figure()
+    fig_temp.add_trace(go.Scatter(x=df_plot['time'], y=df_plot['temperature'], mode='lines', name='Temperatura'))
+    fig_temp.update_layout(yaxis=dict(range=temp_range))
+    st.plotly_chart(fig_temp, use_container_width=True)
+
+    # Gráfico de Humedad
+    st.subheader("💧 Evolución de la Humedad")
+    fig_hum = go.Figure()
+    fig_hum.add_trace(go.Scatter(x=df_plot['time'], y=df_plot['humidity'], mode='lines', name='Humedad'))
+    fig_hum.update_layout(yaxis=dict(range=hum_range))
+    st.plotly_chart(fig_hum, use_container_width=True)
+
+    # Gráfico de Presión
+    if "pressure_hPa" in df_plot.columns:
+        st.subheader("🌡️ Evolución de la Presión")
+        fig_pres = go.Figure()
+        fig_pres.add_trace(go.Scatter(x=df_plot['time'], y=df_plot['pressure_hPa'], mode='lines', name='Presión'))
+        fig_pres.update_layout(yaxis=dict(range=pres_range))
+        st.plotly_chart(fig_pres, use_container_width=True)
 
