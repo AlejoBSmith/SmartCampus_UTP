@@ -1,2 +1,4 @@
 time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-10-16 15:55:17,NodoAngel,20.91,61.59,1001.0,16.0,-100,11.3
+2025-10-16 15:58:13,NodoAngel,21.0,64.08,1001.0,20.0,-31,10.5
+2025-10-16 16:00:54,NodoAngel,21.0,63.47,1001.0,18.0,-31,14.5
