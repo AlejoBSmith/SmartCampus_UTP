@@ -1084,3 +1084,5 @@ time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-11-25 09:06:17,NodoTest,23.45,58.21,1003.0,28.0,-90,13.3
 2025-11-25 09:06:52,TestV4_AntenaAdentro,0.0,0.0,0.0,10.0,-107,6.5
 2025-11-25 09:07:17,NodoTest,23.46,58.0,1003.0,28.0,-90,13.3
+2025-11-25 09:07:52,TestV4_AntenaAdentro,0.0,0.0,0.0,10.0,-103,10.3
+2025-11-25 09:08:17,NodoTest,23.48,58.1,1003.0,30.0,-89,12.5
