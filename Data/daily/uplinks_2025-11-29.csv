@@ -1,2 +1,3 @@
 time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-11-29 00:00:03,NodoTest,23.45,65.98,1004.0,22.0,-106,8.3
+2025-11-29 00:01:03,NodoTest,23.45,66.05,1004.0,24.0,-111,4.0
