@@ -1403,3 +1403,4 @@ time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-12-05 19:56:53,TestDeepSleep_AlejoCasa,21.74,55.17,1004.0,10.0,-102,-3.3
 2025-12-05 19:57:49,NodoTest,19.75,58.79,1004.0,0.0,-101,9.3
 2025-12-05 19:58:49,NodoTest,19.73,58.75,1004.0,0.0,-104,10.3
+2025-12-05 19:59:49,NodoTest,19.7,58.86,1004.0,0.0,-101,11.8
