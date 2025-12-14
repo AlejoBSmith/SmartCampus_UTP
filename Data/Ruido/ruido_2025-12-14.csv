@@ -928,3 +928,4 @@ time,deviceName,max_dB,class_label,average_dB,stdev,rssi,snr
 2025-12-14 15:37:16,INMP441,58.2,Background Noise,54.7,1.66,-109,6.8
 2025-12-14 15:38:16,INMP441,58.3,Background Noise,54.7,1.77,-111,3.8
 2025-12-14 15:39:16,INMP441,58.3,Background Noise,54.7,1.56,-106,7.0
+2025-12-14 15:40:16,INMP441,58.9,Background Noise,54.6,1.65,-109,6.3
