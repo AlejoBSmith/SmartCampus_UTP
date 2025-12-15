@@ -251,3 +251,4 @@ time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-12-15 08:54:36,TestLab,,,,,-91,13.5
 2025-12-15 08:54:42,NODO 1.25,21.97,58.63,1006.0,18.0,-113,2.3
 2025-12-15 08:55:36,TestLab,,,,,-96,12.8
+2025-12-15 08:56:36,TestLab,,,,,-94,13.3
