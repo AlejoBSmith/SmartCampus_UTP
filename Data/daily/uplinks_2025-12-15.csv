@@ -244,3 +244,4 @@ time,deviceName,temperature,humidity,pressure_hPa,battery_mV,rssi,snr
 2025-12-15 08:47:35,TestLab,,,,,-98,9.3
 2025-12-15 08:48:35,TestLab,,,,,-93,13.3
 2025-12-15 08:49:35,TestLab,,,,,-106,8.5
+2025-12-15 08:50:35,TestLab,,,,,-98,12.8
