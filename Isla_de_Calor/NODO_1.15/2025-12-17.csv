@@ -1,0 +1,2 @@
+time,deviceName,temperature,humidity,pressure_hPa,battery_mV,battery_pct,rssi,snr
+2025-12-17 11:02:45,NODO 1.15,20.46,74.5,1005.0,3935.0,85.7,-106,8.5
