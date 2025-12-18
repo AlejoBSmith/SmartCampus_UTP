@@ -1,0 +1,2 @@
+time,deviceName,node_id,temperature,humidity,pressure_hPa,battery_mV,battery_pct,rssi,snr
+2025-12-18 13:23:24,UNKNOWN,NODO_DESCONOCIDO,26.27,71.42,1005.0,3935.0,85.7,-116,-8.0
