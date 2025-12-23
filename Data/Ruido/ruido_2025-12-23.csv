@@ -1,3 +1,4 @@
 time,deviceName,Lmax_dB,Lmax_class,LAeq1min_dB,LAeq_Background Noise,LAeq_People,LAeq_Vehicle,pct_Background Noise,pct_People,pct_Vehicle,P10_dB,P50_dB,P90_dB,rssi,snr
 2025-12-23 00:01:42,INMP441,51.6,Background Noise,51.6,51.6,0.0,0.0,100.0,0.0,0.0,51.6,51.6,51.6,-104,9.8
 2025-12-23 00:06:42,INMP441,51.6,Background Noise,51.6,51.6,0.0,0.0,100.0,0.0,0.0,51.6,51.6,51.6,-108,7.5
+2025-12-23 00:11:42,INMP441,51.6,Background Noise,51.6,51.6,0.0,0.0,100.0,0.0,0.0,51.6,51.6,51.6,-106,8.8
