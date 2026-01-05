@@ -143,3 +143,4 @@ time,deviceName,Lmax_dB,Lmax_class,LAeq1min_dB,LAeq_Background Noise,LAeq_People
 2026-01-05 11:20:21,TestLab,56.1,Background Noise,49.9,49.9,49.5,0.0,94.6,5.4,0.0,40.3,50.5,52.5,-104,10.3
 2026-01-05 11:21:21,TestLab,109.4,Background Noise,95.5,91.9,105.2,0.0,93.7,6.2,0.0,50.2,76.8,95.0,-101,11.3
 2026-01-05 11:22:21,TestLab,103.7,Background Noise,93.5,93.4,95.0,0.0,95.0,5.0,0.0,77.2,89.5,97.7,-94,13.3
+2026-01-05 11:23:21,TestLab,104.7,Background Noise,86.3,87.2,82.2,0.0,72.5,27.5,0.0,68.6,73.4,82.3,-91,13.3
