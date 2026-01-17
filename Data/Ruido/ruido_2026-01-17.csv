@@ -1,0 +1,2 @@
+time,deviceName,Lmax_dB,Lmax_class,LAeq1min_dB,LAeq_Background Noise,LAeq_People,LAeq_Vehicle,pct_Background Noise,pct_People,pct_Vehicle,P10_dB,P50_dB,P90_dB,rssi,snr
+2026-01-17 00:01:48,INMP441,50.8,Background Noise,50.8,50.8,50.8,0.0,99.9,0.1,0.0,50.8,50.8,50.8,-101,11.0
